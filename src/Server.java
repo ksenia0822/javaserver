@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.io.BufferedReader; // reads text from a character-input stream, buffering characters so as to provide ofr the efficient reading of characters, arrays and lines
 import java.io.InputStreamReader; // is a bridge form byte streams to character streams. It reads bytes and decodes them into characters using a specified charset
 import java.io.PrintWriter;
+import java.util.*;
 
 public class Server {
 
@@ -19,6 +20,8 @@ public class Server {
         try {
             serverSocket = new ServerSocket(3000); // create an instance of a server socket bound to the specified port
 
+            List<String> list = new ArrayList<String>();
+
             while (true) {
                 clientSocket = serverSocket.accept(); //listens for a connection to be made to this socket and accepts it
                 bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())); //create a reader
@@ -29,8 +32,15 @@ public class Server {
                 inputLine = bufferedReader.readLine();
                 while (inputLine != null) {
                     if (inputLine.length() == 0) {
+                       System.out.println(list);
+                       // System.out.println(list.indexOf("GET / HTTP/1.1"));
+                      //System.out.println(list.indexOf("\r\n\r\n"));
+
                         break;
                     }
+
+                    list.add(inputLine);
+
                     output.println(inputLine);
                     inputLine = bufferedReader.readLine();
                 }
