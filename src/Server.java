@@ -1,77 +1,109 @@
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.*;
+
 
 public class Server {
 
-    private static ServerSocket serverSocket;
-    private static Socket clientSocket;
-    private static BufferedReader bufferedReader;
-    private static String inputLine;
-    private static PrintWriter output;
-
     public static void main(String[] args) {
         try {
-            serverSocket = new ServerSocket(3000);
+            ServerSocket serverSocket = new ServerSocket(3000);
 
             while (true) {
                 List<String> list = new ArrayList<String>();
-                clientSocket = serverSocket.accept();
-                bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                output = new PrintWriter(clientSocket.getOutputStream());
+
+                Socket clientSocket = serverSocket.accept();
+
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+                InputStreamReader inputReader = new InputStreamReader(clientSocket.getInputStream());
+                PrintWriter output = new PrintWriter(clientSocket.getOutputStream());
 
 
-                inputLine = bufferedReader.readLine();
-                while (inputLine.length() > 0) {
-                   System.out.println(inputLine);
-                    list.add(inputLine);
-                    inputLine = bufferedReader.readLine();
-                }
+                int contentLength = Integer.valueOf("15");
+                char[] body = new char[contentLength];
+                int amountToRead = bufferedReader.read(body);
 
-               String bodyLine = bufferedReader.readLine();
-                while(bodyLine != null && bodyLine.length() > 0){
-                    System.out.println(bodyLine);
-                    output.println(bodyLine);
-                    bodyLine = bufferedReader.readLine();
-                }
+               String inputLine = bufferedReader.readLine();
 
-                /*
+//                StringWriter writer = new StringWriter();
+//                char[] arr = new char[1000];
+//
+//                int read;
+//                while((read = inputReader.read(arr, 0, 1000)) != -1) {
+//                    writer.write(arr, 0, read);
+//                }
+//                inputReader.close();
+//                System.out.println(writer.toString())
 
-                while(true) {
+                int counter = 0;
+                String reqLine = "";
+                String currentHeader = "";
+                String bodyChar = "";
+
+                while (inputLine != null) {
                     //System.out.println(inputLine);
-                    list.add(inputLine);
-                    inputLine = bufferedReader.readLine();
-                    if( inputLine == null ) {
-                        break;
+                    if(counter == 0) {
+                        reqLine = inputLine;
                     }
-                } */
+                    else {
+                        currentHeader = inputLine;
+                    }
+                    if(currentHeader.length() > 14 && currentHeader.substring(0, 15).equals("Content-Length:")) {
+                        bodyChar = currentHeader.substring(15);
+                    }
 
-                Request r = Request.parse(list);
+                    list.add(inputLine);
 
-                System.out.println(r.getHeaders().get("Content-Length:"));
+                    counter++;
+
+                    output.println(inputLine);
+                    inputLine = bufferedReader.readLine();
+
+                }
+                 System.out.println("this is the request line: " + reqLine);
+                 System.out.println("this is current header line: " + currentHeader);
+                 System.out.println("this is char in body: " + bodyChar);
+
+
+//                bufferedReader.readLine();
+//                String bodyLine = bufferedReader.readLine();
+//                while(bodyLine != null && bodyLine.length() > 0){
+//                    System.out.println(bodyLine);
+//                    output.println(bodyLine);
+//                    bodyLine = bufferedReader.readLine();
+//                }
+
+//                output.println("HTTP/1.0 200 OK");
+//                output.println("Content-Type: text/html");
+//                output.println("");
+//                output.println("test");
+//                output.println(Request.parse(list));
+
+               Request r = Request.parse(list);
+                System.out.println("Headers: " + r.getHeaders());
 
                 if (r.getRequestLine().getMethod().equals("GET")){
                     output.println("HTTP/1.0 200 OK");
                     output.println("Content-Type: text/html");
                     output.println("");
-                    output.println("<p>GET REQUEST: </p><p>" + r + "</p>");
+                    output.println("<p>GET: </p><p>" + r + "</p>");
                 }
 
                 if (r.getRequestLine().getMethod().equals("POST")){
                     output.println("HTTP/1.0 200 OK");
                     output.println("Content-Type: text/html");
                     output.println("");
-                    output.println("<p>POST REQUEST:</p><p>" + r + "</p>");
+                    output.println("<p>POST:</p><p>" + r + "</p>");
                 }
 
                 output.close();
                 bufferedReader.close();
                 clientSocket.close();
-
             }
 
 
@@ -81,4 +113,5 @@ public class Server {
         }
 
     }
+
 }

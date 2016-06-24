@@ -24,6 +24,8 @@ public class Request {
         return requestLine;
     }
 
+
+
     public String toString() {
         return "Request Line: " + getRequestLine() + '\n' +  "Headers: " + getHeaders();
     }
@@ -43,9 +45,9 @@ public class Request {
         // List<String> bodyList = lines.subList(index, -1);
 
         List<String> headerList = lines.subList(1, lines.size()-1);
-        Map<String, String> headersMap = new HashMap<>();
+        Map<String, String> headersMap = new LinkedHashMap<>();
 
-        for(int i = 0; i <headerList.size(); i++) {
+        for(int i = 0; i <headerList.size()-1; i++) {
             String line = headerList.get(i);
             String[] arr = line.split(" ");
             headersMap.put(arr[0], arr[1]);
@@ -57,6 +59,10 @@ public class Request {
         }*/
 
         return new Request(headersMap, "", requestLine);
+    }
+
+    public static void parseString(String str) {
+
     }
 
 
