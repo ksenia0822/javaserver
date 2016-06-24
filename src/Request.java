@@ -1,4 +1,3 @@
-package com.company;
 
 import java.util.*;
 
@@ -28,33 +27,40 @@ public class Request {
         return requestLine;
     }
 
-    public static Request parse(ArrayList<String> lines) {
+    public String toString() {
+        return "Request Line: " + getRequestLine() + '\n' +  "Headers: " + getHeaders();
+    }
+
+    public static Request parse(List<String> lines) {
         String requestLineStr = lines.get(0);
         String[] requestLineArr = requestLineStr.split(" ");
         String method = requestLineArr[0];
         String URI = requestLineArr[1];
         String status = requestLineArr[2];
 
-        RequestLine requestLine = new RequestLine(method, URI, status);
+        RequestLine requestLine = new RequestLine(URI, method, status);
 
-        // get header and the body
-        int index = lines.indexOf("\r\n\r\n");
-        List headerList = lines.subList(0, index);
-        List bodyList = lines.subList(index, -1);
 
+        //  int index = lines.indexOf("\r\n\r\n");
+        //  List<String> headerList = lines.subList(1, index);
+        // List<String> bodyList = lines.subList(index, -1);
+
+        List<String> headerList = lines.subList(1, lines.size()-1);
         Map<String, String> headersMap = new HashMap<>();
 
         for(int i = 0; i <headerList.size(); i++) {
             String line = headerList.get(i);
-            headersMap.put(line[0], line[1]);
+            String[] arr = line.split(" ");
+            headersMap.put(arr[0], arr[1]);
         }
 
-        String bodyString = "";
+        /*String bodyString = "";
         for(int i = 0; i < bodyList.size(); i++) {
             bodyString += bodyList.get(i);
-        }
+        }*/
 
-        return new Request(headersMap, bodyString, requestLine);
+        return new Request(headersMap, "", requestLine);
     }
-}
 
+
+}

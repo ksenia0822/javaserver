@@ -1,5 +1,3 @@
-package com.company;
-
 /**
  * Created by ksenia on 6/23/16.
  */
@@ -24,6 +22,10 @@ public class RequestLine {
 
     public String getMethod() {
         return method;
+    }
+
+    public String toString() {
+        return "Version: " + getVersion() + " - URI: " + getURI() + " - Method: " + getMethod();
     }
 
 }
