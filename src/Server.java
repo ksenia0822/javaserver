@@ -24,22 +24,36 @@ public class Server {
                 bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 output = new PrintWriter(clientSocket.getOutputStream());
 
+
                 inputLine = bufferedReader.readLine();
                 while (inputLine.length() > 0) {
-                    System.out.println(inputLine);
+                   System.out.println(inputLine);
                     list.add(inputLine);
                     inputLine = bufferedReader.readLine();
                 }
 
-//                String bodyLine = bufferedReader.readLine();
-//                while(bodyLine != null && bodyLine.length() > 0){
-//                    System.out.println(bodyLine);
-//                    output.println(bodyLine);
-//                    bodyLine = bufferedReader.readLine();
-//                }
+               String bodyLine = bufferedReader.readLine();
+                while(bodyLine != null && bodyLine.length() > 0){
+                    System.out.println(bodyLine);
+                    output.println(bodyLine);
+                    bodyLine = bufferedReader.readLine();
+                }
 
+                /*
+
+                while(true) {
+                    //System.out.println(inputLine);
+                    list.add(inputLine);
+                    inputLine = bufferedReader.readLine();
+                    if( inputLine == null ) {
+                        break;
+                    }
+                } */
 
                 Request r = Request.parse(list);
+
+                System.out.println(r.getHeaders().get("Content-Length:"));
+
                 if (r.getRequestLine().getMethod().equals("GET")){
                     output.println("HTTP/1.0 200 OK");
                     output.println("Content-Type: text/html");

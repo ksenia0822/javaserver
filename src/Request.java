@@ -1,9 +1,6 @@
 
 import java.util.*;
 
-/**
- * Created by ksenia on 6/23/16.
- */
 public class Request {
     private Map<String, String> headers;
     private String body;
