@@ -80,8 +80,6 @@ public class TestServer {
                 Response newResponse = new Response(startLine, responseBody);
                 sendResponseHeaders(newResponse, output);
 
-                System.out.println(headers.get("Content-Length"));
-
                 output.close();
                 bufferedReader.close();
                 clientSocket.close();
