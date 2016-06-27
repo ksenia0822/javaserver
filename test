@@ -1,0 +1,9 @@
+POST / HTTP/1.1
+User-Agent: curl/7.35.0
+Host: localhost:3000
+Accept: */*
+Content-Length: 16
+Content-Type: application/x-www-form-urlencoded
+
+{"username":"z"}
+

@@ -2,8 +2,8 @@
  * Created by kseniamikhailovskaya on 6/25/16.
  */
 public class Credentials {
-    String email;
-    String password;
+    private String email;
+    private String password;
 
     public Credentials(String email, String password) {
         this.email = email;

@@ -2,22 +2,23 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.lang.reflect.Array;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
-public class TestServer {
+public class Server {
 
-    static HashMap<String, Integer> requestCount = new HashMap<String, Integer>();
+    private static HashMap<String, Integer> requestCount = new HashMap<String, Integer>();
 
     public static void sendResponseHeaders(Response response, PrintWriter output) {
-        output.println(response.startLine);
-        output.println(response.CONTENT_TYPE);
-        output.println(response.DATE);
+        output.println(response.getStartLine());
+        output.println(response.getCONTENT_TYPE());
+        output.println(response.getDATE());
         output.println("");
-        output.println(response.body);
+        output.println(response.getBody());
     }
 
     public static void main(String[] args) {
@@ -51,13 +52,16 @@ public class TestServer {
 
                         Credentials userCredentials = new Credentials("ksenia@gmail.com", "123");
 
-                        if(email.equals(userCredentials.email) && password.equals(userCredentials.password)) {
+                        if(email.equals(userCredentials.getEmail()) && password.equals(userCredentials.getPassword())) {
                             startLine = "HTTP/1.0 200 OK";
                             responseBody = "The credentials are correct. You are logged in";
                         } else {
                             if(requestCount.get("POST") > 3) {
                                 startLine = "HTTP/1.0 429 Too Many Requests";
                                 responseBody = "You've exceeded the ammount of attepts. Try again later";
+                                output.close();
+                                bufferedReader.close();
+                                clientSocket.close();
                             }
                             else {
                                 startLine = "HTTP/1.0 401 Unauthorized";
