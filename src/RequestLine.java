@@ -1,6 +1,7 @@
 /**
  * Created by ksenia on 6/23/16.
  */
+
 public class RequestLine {
     private final String URI;
     private final String method;
