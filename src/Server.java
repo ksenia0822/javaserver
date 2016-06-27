@@ -52,21 +52,38 @@ public class Server {
 
                         Credentials userCredentials = new Credentials("ksenia@gmail.com", "123");
 
-                        if(email.equals(userCredentials.getEmail()) && password.equals(userCredentials.getPassword())) {
-                            startLine = "HTTP/1.0 200 OK";
-                            responseBody = "The credentials are correct. You are logged in";
-                        } else {
-                            if(requestCount.get("POST") > 3) {
-                                startLine = "HTTP/1.0 429 Too Many Requests";
-                                responseBody = "You've exceeded the ammount of attepts. Try again later";
-                                output.close();
-                                bufferedReader.close();
-                                clientSocket.close();
-                            }
-                            else {
+//                        if(email.equals(userCredentials.getEmail()) && password.equals(userCredentials.getPassword())) {
+//                            startLine = "HTTP/1.0 200 OK";
+//                            responseBody = "The credentials are correct. You are logged in";
+//                        } else {
+//                            if(requestCount.get("POST") > 3) {
+//                                startLine = "HTTP/1.0 429 Too Many Requests";
+//                                responseBody = "You've exceeded the ammount of attepts. Try again later";
+//                                output.close();
+//                                bufferedReader.close();
+//                                clientSocket.close();
+//                            }
+//                            else {
+//                                startLine = "HTTP/1.0 401 Unauthorized";
+//                                responseBody = "The credentials are not correct. Try again";
+//                            }
+//                        }
+
+
+                        if(requestCount.get("POST") < 4) {
+                            if(email.equals(userCredentials.getEmail()) && password.equals(userCredentials.getPassword())) {
+                                startLine = "HTTP/1.0 200 OK";
+                                responseBody = "The credentials are correct. You are logged in";
+                            } else {
                                 startLine = "HTTP/1.0 401 Unauthorized";
                                 responseBody = "The credentials are not correct. Try again";
                             }
+                        } else {
+                            startLine = "HTTP/1.0 429 Too Many Requests";
+                            responseBody = "You've exceeded the ammount of attepts. Try again later";
+                            output.close();
+                            bufferedReader.close();
+                            clientSocket.close();
                         }
 
                     } else {
